@@ -1,0 +1,331 @@
+// Navigation bar changes
+
+// bottomNavigationBar: BottomNavigationBar(
+      //   onTap: _selectPage,
+      //   backgroundColor: Colors.green[200],
+      //   unselectedItemColor: Colors.black45,
+      //   selectedItemColor: Colors.black87,
+      //   currentIndex: _selectedPageIndex,
+      //   type: BottomNavigationBarType.shifting,
+      //   items: [
+      //     BottomNavigationBarItem(
+      //       // activeIcon: ShaderMask(
+      //       //   shaderCallback: (Rect bounds) {
+      //       //     return RadialGradient(
+      //       //       center: Alignment.topLeft,
+      //       //       radius: 1.0,
+      //       //       colors: <Color>[
+      //       //         Colors.blue[300],
+      //       //         Colors.red
+      //       //       ],
+      //       //       tileMode: TileMode.mirror,
+      //       //     ).createShader(bounds);
+      //       //   },
+      //       //   child: Icon(Icons.library_books,size: 30,),
+      //       // ),
+      //       backgroundColor: Colors.green[300],
+      //       icon: Icon(
+      //         Icons.library_books,
+      //         size: 25,
+      //       ),
+      //       title: Templates.customText(
+      //         text: 'Categories',
+      //         weight: FontWeight.bold,
+      //         color: Colors.black54,
+      //       ),
+      //     ),
+      //     BottomNavigationBarItem(
+      //       backgroundColor: Colors.green[300],
+      //       icon: Icon(
+      //         Icons.file_download,
+      //         size: 25,
+      //       ),
+      //       title: Templates.customText(
+      //         text: 'Downloaded',
+      //         weight: FontWeight.bold,
+      //         color: Colors.black54,
+      //       ),
+      //     ),
+      //   ],
+      // ),
+      
+      import 'package:dharma_deshana/data/app_constants.dart';
+// import 'package:dharma_deshana/model/record.dart';
+// import 'package:dharma_deshana/routes.dart';
+// import 'package:dharma_deshana/templates/templates.dart';
+// import 'package:flutter/material.dart';
+// import 'package:marquee/marquee.dart';
+
+// class SongItem extends StatefulWidget {
+//   final Record songDetail;
+//   final double height;
+
+//   SongItem({@required this.songDetail, this.height});
+
+//   @override
+//   _SongItemState createState() => _SongItemState();
+// }
+
+// class _SongItemState extends State<SongItem> {
+//   double titleWidth = -1;
+//   double titleBoxLength = -1;
+//   bool _addMarquee = false;
+//   double height;
+
+//   @override
+//   void initState() {
+//     super.initState();
+//     height = widget.height;
+//     // WidgetsBinding.instance.addPostFrameCallback(_afterLayout);
+//   }
+
+//   _afterLayout(_) {
+//     _resolveTitle();
+//   }
+
+//   GlobalKey _titleSize = GlobalKey();
+
+//   _resolveTitle() {
+//     final RenderBox renderBoxRed = _titleSize.currentContext.findRenderObject();
+//     final titleSize = renderBoxRed.size;
+//     if (titleSize.width < titleWidth) {
+//       titleBoxLength = titleSize.width;
+//       setState(() {
+//         _addMarquee = true;
+//       });
+//     }
+//   }
+
+//   TextStyle getTitleStyle(double size) {
+//     return TextStyle(
+//       fontSize: size,
+//       fontWeight: FontWeight.bold,
+//       color: Colors.blueGrey,
+//     );
+//   }
+
+//   void playSong(BuildContext ctx, Record song) {
+//     Navigator.of(ctx).pushNamed(
+//       Routes.player,
+//       arguments: song,
+//     );
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     double titleFactor = 0.38;
+//     titleWidth = Templates.getTextSize(
+//             widget.songDetail.name, getTitleStyle(height * titleFactor))
+//         .width;
+
+//     double width = AppConstants.width;
+
+//     return Container(
+//       width: width,
+//       height: height,
+//       child: InkWell(
+//         onTap: () {
+//           playSong(context, widget.songDetail);
+//         },
+//         child: Row(
+//           mainAxisSize: MainAxisSize.max,
+//           children: <Widget>[
+//             Padding(
+//               padding: EdgeInsets.symmetric(horizontal: width * 0.015),
+//               child: Icon(
+//                 Icons.queue_music,
+//                 color: Colors.blueGrey,
+//                 size: width * 0.09,
+//               ),
+//             ),
+//             Container(
+//               padding: EdgeInsets.symmetric(horizontal: width * 0.015),
+//               width: width * 0.73,
+//               child: Column(
+//                 mainAxisAlignment: MainAxisAlignment.center,
+//                 crossAxisAlignment: CrossAxisAlignment.start,
+//                 children: <Widget>[
+//                   Text(
+//                     widget.songDetail.name,
+//                     maxLines: 1,
+//                     style: TextStyle(
+//                       fontSize: height * titleFactor,
+//                       fontWeight: FontWeight.bold,
+//                       color: Colors.blueGrey,
+//                     ),
+//                   ),
+//                   Text(
+//                     widget.songDetail.sub != null
+//                         ? widget.songDetail.sub
+//                         : widget.songDetail.type,
+//                     maxLines: 1,
+//                     softWrap: false,
+//                     overflow: TextOverflow.fade,
+//                     style: TextStyle(
+//                       fontSize: height * 0.27,
+//                       color: Colors.grey,
+//                     ),
+//                   ),
+//                 ],
+//               ),
+//             ),
+//             Padding(
+//                 padding:
+//                     EdgeInsets.only(right: width * 0.010, left: width * 0.015),
+//                 child: IconButton(
+//                   iconSize: width * 0.08,
+//                   icon: Icon(
+//                     Icons.cloud_download,
+//                     color: AppConstants.primaryColor.withOpacity(0.5),
+//                   ),
+//                   onPressed: () {},
+//                 ))
+//           ],
+//         ),
+//       ),
+//     );
+
+//     // return ListTile(
+//     //   leading: Icon(
+//     //     Icons.queue_music,
+//     //     color: Colors.blueGrey,
+//     //   ),
+//     //   title: Container(
+//     //     key: _titleSize,
+//     //     child: _addMarquee
+//     //         ? Container(
+//     //             height: 21,
+//     //             child: Marquee(
+//     //               text: widget.songDetail.name,
+//     //               scrollAxis: Axis.horizontal,
+//     //               crossAxisAlignment: CrossAxisAlignment.center,
+//     //               blankSpace: titleBoxLength / 2,
+//     //               style: titleStyle,
+//     //             ),
+//     //           )
+//     // : Text(
+//     //     widget.songDetail.name,
+//     //     maxLines: 1,
+//     //     style: titleStyle,
+//     //   ),
+//     //   ),
+//     //   subtitle: Text(
+//     // widget.songDetail.sub != null
+//     //     ? widget.songDetail.sub
+//     //     : widget.songDetail.type,
+//     //     maxLines: 1,
+//     //     overflow: TextOverflow.fade,
+//     //     softWrap: false,
+//     //     style: TextStyle(
+//     //       color: Colors.grey,
+//     //     ),
+//     //   ),
+//     //   trailing: Row(
+//     //     mainAxisSize: MainAxisSize.min,
+//     //     children: <Widget>[
+//     //       Text(
+//     //         widget.songDetail.duration != null
+//     //             ? widget.songDetail.duration
+//     //             : '--:--',
+//     //         style: new TextStyle(
+//     //           fontSize: 12.0,
+//     //           color: Colors.grey,
+//     //         ),
+//     //       ),
+//     //       IconButton(
+//     //         onPressed: () {},
+//     //         icon: Icon(
+//     //           Icons.cloud_download,
+//     //           color: AppConstants.primaryColor.withOpacity(0.4),
+//     //         ),
+//     //       ),
+//     //     ],
+//     //   ),
+//     //   onTap: () {
+//     //     playSong(context, widget.songDetail);
+//     //   },
+//     // );
+//   }
+// }
+
+//        Padding(
+          //   padding: const EdgeInsets.all(30.0),
+          //   child: Container(
+          //     width: width * 0.2,
+          //     height: width * 0.2,
+          //     decoration: BoxDecoration(
+          //       color: Colors.grey[300],
+          //       shape: BoxShape.circle,
+          //       boxShadow: [
+          //         BoxShadow(
+          //             color: Colors.grey[600],
+          //             offset: Offset(4.0, 4.0),
+          //             blurRadius: 15.0,
+          //             spreadRadius: 1.0),
+          //         BoxShadow(
+          //             color: Colors.white,
+          //             offset: Offset(-4.0, -4.0),
+          //             blurRadius: 15.0,
+          //             spreadRadius: 1.0),
+          //       ],
+          //       gradient: LinearGradient(
+          //         begin: Alignment.topLeft,
+          //         end: Alignment.bottomRight,
+          //         colors: [
+          //           Colors.grey[200],
+          //           Colors.grey[300],
+          //           Colors.grey[400],
+          //           Colors.grey[500],
+          //         ],
+          //         stops: [0.1, 0.3, 0.8, 1],
+          //       ),
+          //     ),
+          //     child: Material(
+          //       elevation: 15.0,
+          //       shape: CircleBorder(),
+          //       clipBehavior: Clip.hardEdge,
+          //       color: Colors.white,
+          //       child: InkWell(
+          //         onTap: () {
+          //           print('came');
+          //         },
+          //         child: Padding(
+          //           padding: EdgeInsets.only(left: width * 0.01),
+          //           child: Icon(
+          //             Fontisto.play,
+          //             size: width * 0.1,
+          //             color: Colors.black,
+          //           ),
+          //         ),
+          //       ),
+          //     ),
+          //   ),
+          // )
+
+// ClipOval(
+              //   child: Container(
+              //     decoration: BoxDecoration(
+              //       gradient: RadialGradient(
+              //         colors: [
+              //           Theme.of(context).primaryColorLight.withOpacity(0.7),
+              //           Theme.of(context).primaryColor.withOpacity(0.35),
+              //         ],
+              //       ),
+              //     ),
+              //     width: height * 0.4,
+              //     height: height * 0.4,
+              //     child: Selector<SongProvider, bool>(
+              //       selector: (_, model) => model.isPlaying,
+              //       builder: (_, isPlaying, __) => IconButton(
+              //         onPressed: () {
+              //           isPlaying ? pause(songProvider) : resume(songProvider);
+              //         },
+              //         icon: Icon(
+              //           isPlaying ? Icons.pause : Icons.play_arrow,
+              //           size: height * 0.3,
+              //           color: Theme.of(context).primaryColor,
+              //         ),
+              //       ),
+              //     ),
+              //   ),
+              // )
