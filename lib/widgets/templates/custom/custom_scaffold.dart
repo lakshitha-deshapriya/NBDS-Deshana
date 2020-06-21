@@ -1,7 +1,10 @@
 import 'package:dharma_deshana/constant/app_constant.dart';
+import 'package:dharma_deshana/provider/connectivity_provider.dart';
 import 'package:dharma_deshana/widgets/templates/custom/app_background.dart';
+import 'package:dharma_deshana/widgets/templates/custom/connectivity_widget.dart';
 import 'package:dharma_deshana/widgets/templates/custom/player_button.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../templates.dart';
 
@@ -19,11 +22,13 @@ class CustomScaffold extends StatelessWidget {
       appBar: appBar,
       body: Padding(
         padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
-        child: Stack(
-          children: <Widget>[
-            AppBackground(),
-            body,
-          ],
+        child: ConnectivityWidget(
+          child: Stack(
+            children: <Widget>[
+              AppBackground(),
+              body,
+            ],
+          ),
         ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,

@@ -1,4 +1,5 @@
 import 'package:dharma_deshana/models/song.dart';
+import 'package:dharma_deshana/provider/connectivity_provider.dart';
 import 'package:dharma_deshana/provider/data_provider.dart';
 import 'package:dharma_deshana/provider/song_provider.dart';
 import 'package:dharma_deshana/widgets/player/music_player.dart';
@@ -43,96 +44,104 @@ class SongItem extends StatelessWidget {
 
     final textContainerWidth = width * (0.72);
 
-    return Container(
-      width: Templates.getWidth(context),
-      height: height,
-      padding: EdgeInsets.only(
-        left: width * 0.01,
-        right: width * 0.01,
+    return Selector<ConnectivityProvider, bool>(
+      selector: (_, provider) => provider.isConnected,
+      builder: (_, connected, childWidget) => Selector<SongProvider, bool>(
+        selector: (_, songProvider) => songProvider.isPlaying,
+        builder: (_, playing, __) => Container(
+          width: Templates.getWidth(context),
+          height: height,
+          padding: EdgeInsets.only(
+            left: width * 0.01,
+            right: width * 0.01,
+          ),
+          child: NeumorphicButton(
+            padding: EdgeInsets.only(left: width * 0.01, right: width * 0.01),
+            isEnabled: connected || playing,
+            onClick: () {
+              playSong(context, song);
+            },
+            boxShape: NeumorphicBoxShape.roundRect(
+                BorderRadius.circular(height * 0.1)),
+            child: childWidget,
+            style: NeumorphicStyle(
+              color: Colors.transparent,
+              depth: 3,
+              shape: NeumorphicShape.convex,
+            ),
+          ),
+        ),
       ),
-      child: NeumorphicButton(
-        padding: EdgeInsets.only(left: width * 0.01, right: width * 0.01),
-        onClick: () {
-          playSong(context, song);
-        },
-        boxShape:
-            NeumorphicBoxShape.roundRect(BorderRadius.circular(height * 0.1)),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            Container(
-              width: width * 0.13,
-              height: width * 0.13,
-              child: Neumorphic(
-                boxShape: NeumorphicBoxShape.circle(),
-                child: Hero(
-                  tag: 'image${song.songId}',
-                  child: FadeInImage.memoryNetwork(
-                    placeholder: kTransparentImage,
-                    image: song.coverUrl,
-                    fit: BoxFit.fill,
-                  ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: <Widget>[
+          Container(
+            width: width * 0.13,
+            height: width * 0.13,
+            child: Neumorphic(
+              boxShape: NeumorphicBoxShape.circle(),
+              child: Hero(
+                tag: 'image${song.songId}',
+                child: FadeInImage.memoryNetwork(
+                  placeholder: kTransparentImage,
+                  image: song.coverUrl,
+                  fit: BoxFit.fill,
                 ),
-                style: NeumorphicStyle(
-                  shape: NeumorphicShape.convex,
-                ),
+              ),
+              style: NeumorphicStyle(
+                shape: NeumorphicShape.convex,
               ),
             ),
-            SizedBox(width: width * 0.01),
-            Container(
-              padding: EdgeInsets.only(
-                left: width * 0.01,
-                right: width * 0.01,
+          ),
+          SizedBox(width: width * 0.01),
+          Container(
+            padding: EdgeInsets.only(
+              left: width * 0.01,
+              right: width * 0.01,
+            ),
+            width: textContainerWidth,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                CustomText(
+                  text: song.name,
+                  color: Colors.black87.withOpacity(0.6),
+                  height: height * 0.33,
+                  width: textContainerWidth,
+                ),
+                Text(
+                  song.sub != null ? song.sub : song.type,
+                  maxLines: 1,
+                  softWrap: false,
+                  overflow: TextOverflow.fade,
+                  style: TextStyle(
+                    fontSize: height * 0.25,
+                    color: Colors.blueGrey[700],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Container(
+            width: width * 0.1,
+            height: height * 0.8,
+            child: NeumorphicButton(
+              isEnabled: false, //Implement download
+              padding: EdgeInsets.zero,
+              onClick: () {},
+              drawSurfaceAboveChild: true,
+              child: Icon(
+                Feather.more_vertical,
               ),
-              width: textContainerWidth,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  CustomText(
-                    text: song.name,
-                    color: Colors.black87.withOpacity(0.6),
-                    height: height * 0.33,
-                    width: textContainerWidth,
-                  ),
-                  Text(
-                    song.sub != null ? song.sub : song.type,
-                    maxLines: 1,
-                    softWrap: false,
-                    overflow: TextOverflow.fade,
-                    style: TextStyle(
-                      fontSize: height * 0.25,
-                      color: Colors.blueGrey[700],
-                    ),
-                  ),
-                ],
+              style: NeumorphicStyle(
+                color: Colors.lightBlueAccent.withOpacity(0.3),
+                shape: NeumorphicShape.convex,
               ),
             ),
-            Container(
-              width: width * 0.1,
-              height: height * 0.8,
-              child: NeumorphicButton(
-                isEnabled: false, //Implement download
-                padding: EdgeInsets.zero,
-                onClick: () {},
-                drawSurfaceAboveChild: true,
-                child: Icon(
-                  Feather.more_vertical,
-                ),
-                style: NeumorphicStyle(
-                  color: Colors.lightBlueAccent.withOpacity(0.3),
-                  shape: NeumorphicShape.convex,
-                ),
-              ),
-            ),
-          ],
-        ),
-        style: NeumorphicStyle(
-          color: Colors.transparent,
-          depth: 3,
-          shape: NeumorphicShape.convex,
-        ),
+          ),
+        ],
       ),
     );
   }

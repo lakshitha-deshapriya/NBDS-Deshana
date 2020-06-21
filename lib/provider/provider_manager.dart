@@ -1,5 +1,6 @@
+import 'package:dharma_deshana/provider/connectivity_provider.dart';
 import 'package:dharma_deshana/provider/data_provider.dart';
-import 'package:dharma_deshana/provider/player_button_provider.dart';
+import 'package:dharma_deshana/provider/carousel_provider.dart';
 import 'package:dharma_deshana/provider/song_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -10,7 +11,10 @@ List<ChangeNotifierProvider> providers = [
   ChangeNotifierProvider<DataProvider>(
     create: (context) => DataProvider(),
   ),
-  ChangeNotifierProvider<PlayerButtonProvider>(
-    create: (context) => PlayerButtonProvider(),
+  ChangeNotifierProvider<CarouselProvider>(
+    create: (context) => CarouselProvider(),
+  ),
+  ChangeNotifierProvider<ConnectivityProvider>(
+    create: (context) => ConnectivityProvider(),
   ),
 ];

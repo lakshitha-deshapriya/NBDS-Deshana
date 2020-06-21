@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class PlayerButtonProvider extends ChangeNotifier {
+class CarouselProvider extends ChangeNotifier {
 
   double _left;
   double _top;

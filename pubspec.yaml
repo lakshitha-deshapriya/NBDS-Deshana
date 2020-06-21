@@ -38,6 +38,7 @@ dependencies:
   flutter_neumorphic: ^2.0.1
   persistent_bottom_nav_bar: ^1.5.5
   transparent_image: ^1.0.0
+  connectivity: ^0.4.8+6
 
 dev_dependencies:
   flutter_test:

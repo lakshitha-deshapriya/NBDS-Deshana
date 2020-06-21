@@ -6,6 +6,8 @@ import 'package:dharma_deshana/models/song.dart';
 import 'package:dharma_deshana/provider/data_provider.dart';
 
 class DataLoader {
+  DataProvider provider;
+
   loadData(DataProvider provider) async {
     await DbDataLoader().loadSongs().then((songs) {
       if (songs.isNotEmpty) {
@@ -23,21 +25,20 @@ class DataLoader {
 
   loadFromFirebase(DataProvider provider) async {
     FirebaseLoader firebaseLoader = FirebaseLoader();
-    firebaseLoader.initData();
+    firebaseLoader.initData(firebaseCallBack, provider);
+  }
 
-    await firebaseLoader.loadSongs().then((songs) {
-      provider.setSongs(songs);
+  firebaseCallBack(List<Song> songs, List<MusicCategory> categories,
+      DataProvider provider) async {
+    provider.setSongs(songs);
+    provider.setMusicCategories(categories);
 
-      firebaseLoader.loadCategories().then((categories) {
-        provider.setMusicCategories(categories);
+    provider.categorizeData();
+    provider.setInitialized(true);
 
-        provider.categorizeData();
-        provider.setInitialized(true);
+    insertSongsToDb(songs, true);
+    insertCategoriesToDb(categories, true);
 
-        insertSongsToDb(songs, true);
-        insertCategoriesToDb(categories, true);
-      });
-    });
     print('Initliazed from firebase');
   }
 
@@ -48,8 +49,9 @@ class DataLoader {
 
       provider.categorizeData();
       provider.setInitialized(true);
+
+      print('Initialized from DB');
     });
-    print('Initialized from DB');
   }
 
   void insertSongsToDb(List<Song> songs, bool remove) async {

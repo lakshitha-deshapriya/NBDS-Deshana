@@ -1,3 +1,5 @@
+import 'package:dharma_deshana/loader/data_loader.dart';
+import 'package:dharma_deshana/provider/connectivity_provider.dart';
 import 'package:dharma_deshana/provider/data_provider.dart';
 import 'package:dharma_deshana/widgets/item/category_item.dart';
 import 'package:dharma_deshana/widgets/templates/custom/custom_indicator.dart';
@@ -12,6 +14,11 @@ class CategoryList extends StatelessWidget {
 
   CategoryList(this.height);
 
+  refreshData(DataProvider provider) async {
+    provider.setInitialized(false);
+    await DataLoader().loadFromFirebase(provider);
+  }
+
   @override
   Widget build(BuildContext context) {
     final DataProvider dataProvider =
@@ -25,38 +32,43 @@ class CategoryList extends StatelessWidget {
           ? Column(
               mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
-                Container(
-                  height: height * 0.09,
-                  padding: EdgeInsets.only(
-                    left: width * 0.04,
-                    right: width * 0.04,
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: <Widget>[
-                      NeumorphicButton(
-                        padding: EdgeInsets.zero,
-                        drawSurfaceAboveChild: true,
-                        onClick: () {
-                          print('came');
-                        },
-                        child: Container(
-                          padding: EdgeInsets.all(height * 0.015),
-                          child: Icon(
-                            Fontisto.spinner_refresh,
-                            color: Colors.blueGrey,
-                            size: height * 0.044,
+                Selector<ConnectivityProvider, bool>(
+                  selector: (_, provider) => provider.isConnected,
+                  builder: (_, connected, childWidget) => Container(
+                    height: height * 0.09,
+                    padding: EdgeInsets.only(
+                      left: width * 0.04,
+                      right: width * 0.04,
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: <Widget>[
+                        NeumorphicButton(
+                          padding: EdgeInsets.zero,
+                          drawSurfaceAboveChild: true,
+                          isEnabled: connected,
+                          onClick: () {
+                            refreshData(dataProvider);
+                          },
+                          child: childWidget,
+                          boxShape: NeumorphicBoxShape.circle(),
+                          style: NeumorphicStyle(
+                            color: Colors.lightBlueAccent.withOpacity(0.3),
+                            shape: NeumorphicShape.convex,
+                            shadowLightColor: Colors.transparent,
+                            intensity: 10,
                           ),
                         ),
-                        boxShape: NeumorphicBoxShape.circle(),
-                        style: NeumorphicStyle(
-                          color: Colors.lightBlueAccent.withOpacity(0.3),
-                          shape: NeumorphicShape.convex,
-                          shadowLightColor: Colors.transparent,
-                          intensity: 10,
-                        ),
-                      ),
-                    ],
+                      ],
+                    ),
+                  ),
+                  child: Container(
+                    padding: EdgeInsets.all(height * 0.015),
+                    child: Icon(
+                      Fontisto.spinner_refresh,
+                      color: Colors.blueGrey,
+                      size: height * 0.044,
+                    ),
                   ),
                 ),
                 Container(

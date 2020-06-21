@@ -63,7 +63,7 @@ class Song extends Savable {
     map['NAME'] = name;
     map['TYPE'] = type;
     map['SUB'] = sub;
-    map['SUB'] = coverUrl;
+    map['COVER_URL'] = coverUrl;
     map['INSERT_TIME'] = dateTime.millisecondsSinceEpoch;
     return map;
   }
@@ -76,7 +76,7 @@ class Song extends Savable {
       name: map['NAME'],
       type: map['TYPE'],
       sub: map['SUB'],
-      coverUrl: map['SUB'],
+      coverUrl: map['COVER_URL'],
       categoryTypeKey: map['CATEGORY'] + '-' + map['TYPE'],
       dateTime: DateTime.fromMillisecondsSinceEpoch(map['INSERT_TIME']),
     );

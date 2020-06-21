@@ -1,7 +1,7 @@
 import 'dart:math';
 
 import 'package:dharma_deshana/constant/app_constant.dart';
-import 'package:dharma_deshana/provider/player_button_provider.dart';
+import 'package:dharma_deshana/provider/carousel_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tuple/tuple.dart';
@@ -19,9 +19,9 @@ class DraggableButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final PlayerButtonProvider provider =
-        Provider.of<PlayerButtonProvider>(context, listen: false);
-    return Selector<PlayerButtonProvider, Tuple2<double, double>>(
+    final CarouselProvider provider =
+        Provider.of<CarouselProvider>(context, listen: false);
+    return Selector<CarouselProvider, Tuple2<double, double>>(
       selector: (_, provider) => Tuple2(provider.left, provider.top),
       builder: (_, tuple, draggable) => Stack(
         children: [
@@ -47,7 +47,7 @@ class DraggableButton extends StatelessWidget {
   }
 
   void _handleDragEnded(BuildContext context, DraggableDetails drag,
-      PlayerButtonProvider provider) {
+      CarouselProvider provider) {
     if (!provider.isMetaInit) {
       Size size = MediaQuery.of(context).size;
       provider.setMetaData(

@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dharma_deshana/models/music_category.dart';
 import 'package:dharma_deshana/models/song.dart';
+import 'package:dharma_deshana/provider/data_provider.dart';
 
 class FirebaseHandler {
   static FirebaseHandler _firebaseHandler;
@@ -21,7 +22,7 @@ class FirebaseHandler {
     return _firebaseHandler;
   }
 
-  void initData() async {
+  void initData(Function callback, DataProvider provider) async {
     print('Json retrieve started');
     Firestore.instance.collection('MyApp').document('directory').get().then(
       (snapshot) {
@@ -40,27 +41,10 @@ class FirebaseHandler {
             .map((json) => MusicCategory.fromJson(json, categoryId++))
             .toList();
 
-        success = true;
-        initialized = true;
+        callback( songs, categories, provider );
       },
     ).catchError((_) {
-      initialized = true;
-      success = false;
+      callback(List<Song>(), List<MusicCategory>(), provider);
     });
-  }
-
-  Future<List<dynamic>> getData(String identifier) async {
-    if (!initialized) {
-      return Future.delayed(
-        Duration(milliseconds: 500),
-        () => getData(identifier),
-      );
-    }
-    if (Song.tableName == identifier) {
-      return songs;
-    } else if (MusicCategory.tableName == identifier) {
-      return categories;
-    }
-    return List<dynamic>();
   }
 }
