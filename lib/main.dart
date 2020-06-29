@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget {
             child: child,
           );
         },
-        title: 'Dharma Deshana',
+        title: 'Deshana',
         theme: ThemeData(
           primarySwatch: Colors.blue,
           accentColor: Color.fromRGBO(232, 170, 89, 1),

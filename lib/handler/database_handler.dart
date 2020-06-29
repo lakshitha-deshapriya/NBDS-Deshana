@@ -26,7 +26,7 @@ class DatabaseHandler {
 
   Future<Database> initializeDatabase() async {
     Directory directory = await getApplicationDocumentsDirectory();
-    String path = directory.path + 'music_player16.db';
+    String path = directory.path + 'music_player.db';
 
     var db = await openDatabase(path, version: 1, onCreate: _createDb);
     return db;

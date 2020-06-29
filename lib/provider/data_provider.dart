@@ -2,6 +2,7 @@ import 'package:collection/collection.dart';
 import 'package:dharma_deshana/loader/data_loader.dart';
 import 'package:dharma_deshana/models/music_category.dart';
 import 'package:dharma_deshana/models/song.dart';
+import 'package:dharma_deshana/provider/connectivity_provider.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
@@ -109,9 +110,9 @@ class DataProvider with ChangeNotifier {
     return 'https://res.cloudinary.com/lakshithadev/image/upload/v1590227298/Images/music_ab7bmx.png'; //Default category image
   }
 
-  void initData() async {
+  void initData(ConnectivityProvider connectivity) async {
     if (!isInitialized) {
-      await DataLoader().loadData(this);
+      await DataLoader().loadData(this, connectivity);
     }
   }
 

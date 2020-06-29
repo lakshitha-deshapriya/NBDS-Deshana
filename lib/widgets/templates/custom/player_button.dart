@@ -1,4 +1,3 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dharma_deshana/models/song.dart';
 import 'package:dharma_deshana/provider/song_provider.dart';
 import 'package:dharma_deshana/widgets/player/music_player.dart';
@@ -7,6 +6,7 @@ import 'package:dharma_deshana/widgets/templates/templates.dart';
 import 'package:flutter/material.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
+import 'package:transparent_image/transparent_image.dart';
 
 class PlayerButton extends StatelessWidget {
   final double height;
@@ -57,15 +57,10 @@ class PlayerButton extends StatelessWidget {
                   child: Selector<SongProvider, Song>(
                     selector: (_, provider) => provider.song,
                     builder: (_, song, __) => Container(
-                      decoration: BoxDecoration(
-                        color: Theme.of(context)
-                            .primaryColorLight
-                            .withOpacity(0.5),
-                        shape: BoxShape.circle,
-                        image: DecorationImage(
-                          image: CachedNetworkImageProvider(song.coverUrl),
-                          fit: BoxFit.fitHeight,
-                        ),
+                      child: FadeInImage.memoryNetwork(
+                        placeholder: kTransparentImage,
+                        image: song.coverUrl,
+                        fit: BoxFit.fill,
                       ),
                     ),
                   ),

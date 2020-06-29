@@ -1,4 +1,5 @@
 import 'package:dharma_deshana/constant/app_constant.dart';
+import 'package:dharma_deshana/provider/connectivity_provider.dart';
 import 'package:dharma_deshana/provider/data_provider.dart';
 import 'package:dharma_deshana/widgets/list/category_list.dart';
 import 'package:dharma_deshana/widgets/templates/custom/custom_indicator.dart';
@@ -10,10 +11,12 @@ import 'package:provider/provider.dart';
 class Categories extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final ConnectivityProvider connectivity =
+        Provider.of<ConnectivityProvider>(context, listen: false);
     final DataProvider dataProvider =
         Provider.of<DataProvider>(context, listen: false);
 
-    dataProvider.initData();
+    dataProvider.initData(connectivity);
 
     final double height =
         Templates.getAvailableHeight(null, context) - AppConstant.navbarHeight;

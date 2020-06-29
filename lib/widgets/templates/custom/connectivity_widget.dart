@@ -1,5 +1,6 @@
 import 'package:dharma_deshana/constant/app_constant.dart';
 import 'package:dharma_deshana/provider/connectivity_provider.dart';
+import 'package:dharma_deshana/widgets/templates/custom/no_internet_widget.dart';
 import 'package:dharma_deshana/widgets/templates/templates.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
@@ -24,32 +25,8 @@ class ConnectivityWidget extends StatelessWidget {
         child: Stack(
           alignment: allign,
           children: <Widget>[
-            connected
-                ? Container()
-                : Container(
-                    height: height * 0.085,
-                    child: Neumorphic(
-                      style: NeumorphicStyle(
-                        color: Colors.lightBlueAccent.withOpacity(0.3),
-                        depth: 5,
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: <Widget>[
-                          Text(
-                            'Connect to Internet',
-                            style: TextStyle(
-                              fontSize: height * 0.03,
-                              color: Colors.red,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
             childWidget,
+            connected ? Container() : NoInternetWidget(height: height * 0.09),
           ],
         ),
       ),

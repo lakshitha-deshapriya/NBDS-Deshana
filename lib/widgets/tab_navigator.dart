@@ -19,14 +19,14 @@ class TabNaigator extends StatelessWidget {
       navBarHeight: AppConstant.navbarHeight,
       controller: controller,
       screens: Templates.buildScreens(),
-      items: Templates.navBarsItems(),
+      items: Templates.navBarsItems(AppConstant.navbarHeight),
       confineInSafeArea: true,
       backgroundColor: Colors.white,
       handleAndroidBackButtonPress: true,
       navBarCurve: NavBarCurve.upperCorners,
       popAllScreensOnTapOfSelectedTab: false,
       showElevation: true,
-      itemCount: 4,
+      itemCount: 3,
       navBarStyle: NavBarStyle.style1,
     );
   }

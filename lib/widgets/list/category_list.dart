@@ -14,64 +14,66 @@ class CategoryList extends StatelessWidget {
 
   CategoryList(this.height);
 
-  refreshData(DataProvider provider) async {
+  refreshData(DataProvider provider, ConnectivityProvider connectivity) async {
     provider.setInitialized(false);
-    await DataLoader().loadFromFirebase(provider);
+    await DataLoader().loadFromFirebase(provider, connectivity);
   }
 
   @override
   Widget build(BuildContext context) {
+    final ConnectivityProvider connectivity =
+        Provider.of<ConnectivityProvider>(context, listen: false);
     final DataProvider dataProvider =
         Provider.of<DataProvider>(context, listen: false);
 
     final double width = MediaQuery.of(context).size.width;
 
-    return Selector<DataProvider, bool>(
-      selector: (_, model) => model.isCategoriesInitialized,
-      builder: (_, initialized, child) => initialized
-          ? Column(
-              mainAxisAlignment: MainAxisAlignment.start,
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: <Widget>[
+        Selector<ConnectivityProvider, bool>(
+          selector: (_, provider) => provider.isConnected,
+          builder: (_, connected, childWidget) => Container(
+            height: height * 0.09,
+            padding: EdgeInsets.only(
+              left: width * 0.04,
+              right: width * 0.04,
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
               children: <Widget>[
-                Selector<ConnectivityProvider, bool>(
-                  selector: (_, provider) => provider.isConnected,
-                  builder: (_, connected, childWidget) => Container(
-                    height: height * 0.09,
-                    padding: EdgeInsets.only(
-                      left: width * 0.04,
-                      right: width * 0.04,
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: <Widget>[
-                        NeumorphicButton(
-                          padding: EdgeInsets.zero,
-                          drawSurfaceAboveChild: true,
-                          isEnabled: connected,
-                          onClick: () {
-                            refreshData(dataProvider);
-                          },
-                          child: childWidget,
-                          boxShape: NeumorphicBoxShape.circle(),
-                          style: NeumorphicStyle(
-                            color: Colors.lightBlueAccent.withOpacity(0.3),
-                            shape: NeumorphicShape.convex,
-                            shadowLightColor: Colors.transparent,
-                            intensity: 10,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  child: Container(
-                    padding: EdgeInsets.all(height * 0.015),
-                    child: Icon(
-                      Fontisto.spinner_refresh,
-                      color: Colors.blueGrey,
-                      size: height * 0.044,
-                    ),
+                NeumorphicButton(
+                  padding: EdgeInsets.zero,
+                  drawSurfaceAboveChild: true,
+                  isEnabled: connected,
+                  onClick: () {
+                    refreshData(dataProvider, connectivity);
+                  },
+                  child: childWidget,
+                  boxShape: NeumorphicBoxShape.circle(),
+                  style: NeumorphicStyle(
+                    color: Colors.lightBlueAccent.withOpacity(0.3),
+                    shape: NeumorphicShape.convex,
+                    shadowLightColor: Colors.transparent,
+                    intensity: 10,
                   ),
                 ),
-                Container(
+              ],
+            ),
+          ),
+          child: Container(
+            padding: EdgeInsets.all(height * 0.015),
+            child: Icon(
+              Fontisto.spinner_refresh,
+              color: Colors.blueGrey,
+              size: height * 0.044,
+            ),
+          ),
+        ),
+        Selector<DataProvider, bool>(
+          selector: (_, model) => model.isCategoriesInitialized,
+          builder: (_, initialized, childWidget) => initialized
+              ? Container(
                   height: height * 0.91,
                   child: GridView.builder(
                     padding: EdgeInsets.only(
@@ -90,14 +92,14 @@ class CategoryList extends StatelessWidget {
                       mainAxisSpacing: width * 0.05,
                     ),
                   ),
-                ),
-              ],
-            )
-          : child,
-      child: CustomIndicator(
-        color: Theme.of(context).primaryColor.withOpacity(0.6),
-        width: Templates.getWidth(context),
-      ),
+                )
+              : childWidget,
+          child: CustomIndicator(
+            color: Theme.of(context).primaryColor.withOpacity(0.6),
+            width: Templates.getWidth(context),
+          ),
+        ),
+      ],
     );
   }
 }

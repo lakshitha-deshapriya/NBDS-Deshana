@@ -1,4 +1,4 @@
-package com.example.dharma_deshana
+package nbds.app.dharma_deshana
 
 import androidx.annotation.NonNull;
 import io.flutter.embedding.android.FlutterActivity

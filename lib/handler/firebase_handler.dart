@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dharma_deshana/constant/app_constant.dart';
 import 'package:dharma_deshana/models/music_category.dart';
 import 'package:dharma_deshana/models/song.dart';
 import 'package:dharma_deshana/provider/data_provider.dart';
@@ -24,7 +25,7 @@ class FirebaseHandler {
 
   void initData(Function callback, DataProvider provider) async {
     print('Json retrieve started');
-    Firestore.instance.collection('MyApp').document('directory').get().then(
+    Firestore.instance.collection('MyApp').document(AppConstant.prod).get().then(
       (snapshot) {
         print('Json retrival finished');
         var dataJson = jsonDecode(snapshot['url'])['data'] as List;

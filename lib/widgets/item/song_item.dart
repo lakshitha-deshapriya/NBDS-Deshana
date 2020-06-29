@@ -90,6 +90,7 @@ class SongItem extends StatelessWidget {
                 ),
               ),
               style: NeumorphicStyle(
+                color: Colors.lightBlueAccent.withOpacity(0.1),
                 shape: NeumorphicShape.convex,
               ),
             ),

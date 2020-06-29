@@ -3,29 +3,35 @@ import 'package:dharma_deshana/loader/db_data_loader.dart';
 import 'package:dharma_deshana/loader/firebase_loader.dart';
 import 'package:dharma_deshana/models/music_category.dart';
 import 'package:dharma_deshana/models/song.dart';
+import 'package:dharma_deshana/provider/connectivity_provider.dart';
 import 'package:dharma_deshana/provider/data_provider.dart';
 
 class DataLoader {
   DataProvider provider;
 
-  loadData(DataProvider provider) async {
+  loadData(DataProvider provider, ConnectivityProvider connectivity) async {
     await DbDataLoader().loadSongs().then((songs) {
       if (songs.isNotEmpty) {
         DateTime nextInsertTime = songs[0].dateTime.add(Duration(days: 1));
         if (nextInsertTime.isBefore(DateTime.now())) {
-          loadFromFirebase(provider);
+          loadFromFirebase(provider, connectivity);
         } else {
           loadFromDatabase(provider, songs);
         }
       } else {
-        loadFromFirebase(provider);
+        loadFromFirebase(provider, connectivity);
       }
     });
   }
 
-  loadFromFirebase(DataProvider provider) async {
-    FirebaseLoader firebaseLoader = FirebaseLoader();
-    firebaseLoader.initData(firebaseCallBack, provider);
+  loadFromFirebase(
+      DataProvider provider, ConnectivityProvider connectivity) async {
+    if (connectivity.isConnected) {
+      FirebaseLoader firebaseLoader = FirebaseLoader();
+      firebaseLoader.initData(firebaseCallBack, provider);
+    } else {
+      print('Not connected to internet');
+    }
   }
 
   firebaseCallBack(List<Song> songs, List<MusicCategory> categories,

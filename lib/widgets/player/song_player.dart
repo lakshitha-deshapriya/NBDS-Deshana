@@ -31,7 +31,7 @@ class SongPlayer extends StatelessWidget {
     });
 
     player.onPlayerCompletion.listen((event) {
-      next(songProvider);
+      next(songProvider, true);
     });
 
     player.onSeekComplete.listen((finished) {
@@ -105,13 +105,13 @@ class SongPlayer extends StatelessWidget {
     }
   }
 
-  void next(SongProvider songProvider) {
+  void next(SongProvider songProvider, bool finished) {
     int success = songProvider.selectNextSong();
     if (success == 1) {
       songProvider.audioPlayer.stop();
       resetPlayerData(songProvider);
       playSong(songProvider);
-    } else {
+    } else if ( finished ) {
       resetPlayerData(songProvider);
       songProvider.setPaused(false);
       songProvider.setPlaying(false);
@@ -227,7 +227,7 @@ class SongPlayer extends StatelessWidget {
                 child: NeumorphicButton(
                   padding: EdgeInsets.only(left: height * 0.03),
                   drawSurfaceAboveChild: true,
-                  onClick: () => next(songProvider),
+                  onClick: () => next(songProvider, false),
                   child: Icon(
                     Fontisto.forward,
                     size: height * 0.13,

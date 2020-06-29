@@ -96,7 +96,6 @@ class SongProvider with ChangeNotifier {
   void setPositionAndDuration(Duration position, Duration duration) {
     _duration = duration;
     _position = position;
-    notifyListeners();
   }
 
   bool get isShowCarousel => _showCarousel;

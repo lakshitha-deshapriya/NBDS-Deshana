@@ -89,7 +89,7 @@ class TypeList extends StatelessWidget {
                     ),
                   ),
                   Container(
-                    height: height * 0.7,
+                    height: height * 0.91,
                     child: GridView.builder(
                       padding: EdgeInsets.only(
                         left: width * 0.04,

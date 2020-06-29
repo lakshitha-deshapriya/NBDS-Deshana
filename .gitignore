@@ -40,3 +40,4 @@ android/app/.classpath
 android/.settings/org.eclipse.buildship.core.prefs
 android/.project
 android/app/.settings/org.eclipse.buildship.core.prefs
+android/key.properties

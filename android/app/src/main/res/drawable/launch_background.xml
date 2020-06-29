@@ -1,12 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Modify this file to customize your launch splash screen -->
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:drawable="@android:color/black" />
+    <item android:drawable="@color/blueOp" />
 
     <!-- You can insert your own image assets here -->
     <item>
         <bitmap
-            android:gravity="center"
+            android:gravity="fill_horizontal"
             android:src="@drawable/deshana" />
+        <!-- <ImageView
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:src="@drawable/deshana" /> -->
     </item>
 </layer-list>
+
+<!-- ible with attribute gravity (attr) flags [bottom=80, center=17, center_horizontal=1, center_vertical=16, 
+clip_horizontal=8, clip_vertical=128, end=8388613, fill=119, fill_horizontal=7, fill_vertical=112, left=3, right=5, 
+start=8388611, top=48]. -->
