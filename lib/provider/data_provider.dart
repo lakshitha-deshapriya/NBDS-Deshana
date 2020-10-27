@@ -88,6 +88,13 @@ class DataProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  updateSongTaskId(int songId, String taskId) {
+    Song song = this._songs?.firstWhere((song) => song.songId == songId);
+    if (song != null) {
+      song.taskId = taskId;
+    }
+  }
+
   List<String> getTypesForCategory(String category) {
     return _categoryTypes[category];
   }
@@ -117,7 +124,8 @@ class DataProvider with ChangeNotifier {
   }
 
   void categorizeData() async {
-    _categories = _musicCategories.map((category) => category.category).toSet().toList();
+    _categories =
+        _musicCategories.map((category) => category.category).toSet().toList();
     _categories.sort((a, b) => a.toLowerCase().compareTo(b.toLowerCase()));
 
     setCategoryInitialized(true);

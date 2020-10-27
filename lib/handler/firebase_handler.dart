@@ -25,7 +25,7 @@ class FirebaseHandler {
 
   void initData(Function callback, DataProvider provider) async {
     print('Json retrieve started');
-    Firestore.instance.collection('MyApp').document(AppConstant.prod).get().then(
+    Firestore.instance.collection('MyApp').document(AppConstant.env).get().then(
       (snapshot) {
         print('Json retrival finished');
         var dataJson = jsonDecode(snapshot['url'])['data'] as List;

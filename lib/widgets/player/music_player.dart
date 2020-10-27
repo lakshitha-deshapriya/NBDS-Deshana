@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:dharma_deshana/models/song.dart';
 import 'package:dharma_deshana/provider/song_provider.dart';
 import 'package:dharma_deshana/widgets/player/album_cover.dart';
+import 'package:dharma_deshana/widgets/player/music_buttons.dart';
 import 'package:dharma_deshana/widgets/player/song_player.dart';
 import 'package:dharma_deshana/widgets/templates/custom/custom_neumorphic_button.dart';
 import 'package:dharma_deshana/widgets/templates/custom/custom_scaffold.dart';
@@ -74,32 +75,7 @@ class MusicPlayer extends StatelessWidget {
                     SizedBox(height: height * 0.03),
                     Container(
                       height: height * 0.06,
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: <Widget>[
-                          CustomNeumorphicButton(
-                            shape: NeumorphicBoxShape.roundRect(
-                                BorderRadius.circular(height * 0.02)),
-                            icon: Ionicons.ios_repeat,
-                            height: height * 0.04,
-                            onTap: () {},
-                            backgroundColor:
-                                Colors.lightBlueAccent.withOpacity(0.1),
-                            depth: 5,
-                          ),
-                          CustomNeumorphicButton(
-                            shape: NeumorphicBoxShape.roundRect(
-                                BorderRadius.circular(height * 0.02)),
-                            icon: MaterialCommunityIcons.cloud_download_outline,
-                            height: height * 0.04,
-                            onTap: () {},
-                            backgroundColor:
-                                Colors.lightBlueAccent.withOpacity(0.1),
-                            depth: 5,
-                          ),
-                        ],
-                      ),
+                      child: MusicButtons(height: height, song: song),
                     ),
                     SizedBox(height: height * 0.03),
                     Container(

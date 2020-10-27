@@ -5,11 +5,13 @@ class MusicCategory extends Savable  {
 
   final int categoryId;
   final String category;
+  final String categoryName;
   final String imageUrl;
 
   MusicCategory({
     this.categoryId,
     this.category,
+    this.categoryName,
     this.imageUrl,
   });
 
@@ -17,6 +19,7 @@ class MusicCategory extends Savable  {
     return MusicCategory(
       categoryId: categoryId,
       category: json['category'],
+      categoryName: json['category_name'],
       imageUrl: json['image'],
     );
   }
@@ -41,6 +44,7 @@ class MusicCategory extends Savable  {
     var map = Map<String, dynamic>();
     map['CATEGORY_ID'] = categoryId;
     map['CATEGORY'] = category;
+    map['CATEGORY_NAME'] = categoryName;
     map['IMAGE_URL'] = imageUrl;
     return map;
   }
@@ -49,6 +53,7 @@ class MusicCategory extends Savable  {
     return MusicCategory(
       categoryId: map['CATEGORY_ID'],
       category: map['CATEGORY'],
+      categoryName: map['CATEGORY_NAME'],
       imageUrl: map['IMAGE_URL'],
     );
   }

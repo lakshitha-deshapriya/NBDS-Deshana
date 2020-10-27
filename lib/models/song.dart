@@ -4,6 +4,7 @@ class Song extends Savable {
   static String tableName = 'SONGS';
 
   final int songId;
+  final String songIdentifier;
   final String category;
   final String url;
   final String name;
@@ -12,9 +13,11 @@ class Song extends Savable {
   final String coverUrl;
   final String categoryTypeKey;
   final DateTime dateTime;
+  String taskId;
 
   Song({
     this.songId,
+    this.songIdentifier,
     this.category,
     this.url,
     this.name,
@@ -23,11 +26,13 @@ class Song extends Savable {
     this.coverUrl,
     this.categoryTypeKey,
     this.dateTime,
+    this.taskId,
   });
 
   factory Song.fromJson(dynamic json, int songId, DateTime dateTime) {
     return Song(
       songId: songId,
+      songIdentifier: json['id'],
       category: json['category'],
       url: json['url'],
       name: json['name'],
@@ -58,6 +63,7 @@ class Song extends Savable {
   Map<String, dynamic> toMap() {
     var map = Map<String, dynamic>();
     map['SONG_ID'] = songId;
+    map['SONG_IDENTIFIER'] = songIdentifier;
     map['CATEGORY'] = category;
     map['SONG_URL'] = url;
     map['NAME'] = name;
@@ -71,6 +77,7 @@ class Song extends Savable {
   factory Song.fromMapObject(Map<String, dynamic> map) {
     return Song(
       songId: map['SONG_ID'],
+      songIdentifier: map['SONG_IDENTIFIER'],
       category: map['CATEGORY'],
       url: map['SONG_URL'],
       name: map['NAME'],
