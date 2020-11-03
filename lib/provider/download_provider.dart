@@ -1,4 +1,3 @@
-import 'dart:collection';
 import 'dart:isolate';
 import 'dart:ui';
 
@@ -16,12 +15,15 @@ class DownloadProvider with ChangeNotifier {
 
   bool _portRegistered = false;
   bool _hasPermission = false;
+  bool _initDownloads = false;
 
+  String _taskDetail = '';
   List<DownloadInfo> _downloadingTasks = List();
   List<DownloadTask> _downloads = List();
 
   Future<Null> initDownloads() async {
     _downloads = await FlutterDownloader.loadTasks();
+    setDownloadInitialized(true);
   }
 
   Future<Null> prepare(TargetPlatform platform) async {
@@ -73,15 +75,15 @@ class DownloadProvider with ChangeNotifier {
     print(
         'Background Isolate Callback: task ($taskId) is in status ($status) and process ($progress)');
 
-    List<DownloadInfo> newList = List();
+    DownloadInfo downloadInfo;
     for (DownloadInfo info in _downloadingTasks) {
       if (info.taskId == taskId) {
         info.progress = progress;
         info.status = status;
+        downloadInfo = info;
       }
-      newList.add(info);
     }
-    setDownloadTasks(newList);
+    setTaskDetail(downloadInfo);
 
     if (status == DownloadTaskStatus.complete) {
       initDownloads();
@@ -122,11 +124,32 @@ class DownloadProvider with ChangeNotifier {
 
   bool get hasPermission => _hasPermission;
 
-  List<DownloadInfo> get downloadTasks => _downloadingTasks;
-  setDownloadTasks(List<DownloadInfo> infoList) {
+  bool get isDownloadsInitialized => _initDownloads;
+  setDownloadInitialized(bool initialized) {
+    _initDownloads = initialized;
+    notifyListeners();
+  }
+
+  List<DownloadInfo> get downloadInfoList => _downloadingTasks;
+  setDownloadInfoList(List<DownloadInfo> infoList) {
     _downloadingTasks = infoList;
     notifyListeners();
   }
+
+  String get taskDetail => _taskDetail;
+  setTaskDetail(DownloadInfo info) {
+    _taskDetail = info.taskId +
+        '-' +
+        info.songName +
+        '-' +
+        info.progress.toString() +
+        '-' +
+        info.status.toString() +
+        ',';
+    notifyListeners();
+  }
+
+  List<DownloadTask> get downloadTaskList => _downloads;
 
   bool hasDownloads(String songName) {
     String fileName = songName + '.mp3';

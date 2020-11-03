@@ -15,7 +15,6 @@ import 'package:provider/provider.dart';
 
 class MusicButtons extends StatelessWidget {
   final double height;
-  // final Song song;
   final TargetPlatform platform;
 
   const MusicButtons({@required this.height, this.platform});
@@ -63,7 +62,7 @@ class MusicButtons extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     DownloadProvider downloadProvider =
-        Provider.of<DownloadProvider>(context);
+        Provider.of<DownloadProvider>(context, listen: false);
     DataProvider dataProvider =
         Provider.of<DataProvider>(context, listen: false);
     SongProvider songProvider =
@@ -82,13 +81,14 @@ class MusicButtons extends StatelessWidget {
           backgroundColor: Colors.lightBlueAccent.withOpacity(0.1),
           depth: 5,
         ),
-        Selector<DownloadProvider, List<DownloadInfo>>(
-            selector: (_, provider) => provider.downloadTasks,
-            builder: (_, infoList, __) {
+        Selector<DownloadProvider, String>(
+            selector: (_, provider) => provider.taskDetail,
+            builder: (_, taskMap, __) {
               Song song = songProvider.song;
 
               DownloadInfo info;
-              for (DownloadInfo downloadInfo in infoList) {
+              for (DownloadInfo downloadInfo
+                  in downloadProvider.downloadInfoList) {
                 if (song.taskId == downloadInfo.taskId) {
                   info = downloadInfo;
                 }

@@ -1,89 +1,88 @@
-import 'dart:isolate';
-import 'dart:ui';
-
 import 'package:dharma_deshana/constant/app_constant.dart';
+import 'package:dharma_deshana/provider/download_provider.dart';
+import 'package:dharma_deshana/widgets/templates/custom/custom_indicator.dart';
 import 'package:dharma_deshana/widgets/templates/custom/custom_scaffold.dart';
 import 'package:dharma_deshana/widgets/templates/templates.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
+import 'package:flutter_neumorphic/flutter_neumorphic.dart';
+import 'package:flutter_vector_icons/flutter_vector_icons.dart';
+import 'package:provider/provider.dart';
 
-class Downloads extends StatefulWidget {
-  @override
-  _DownloadsState createState() => _DownloadsState();
-}
-
-class _DownloadsState extends State<Downloads> {
-
-  bool _isLoading;
-  bool _permissionReady;
-  String _localPath;
-  ReceivePort _port = ReceivePort();
-
-  @override
-  void initState() {
-    super.initState();
-
-    _bindBackgroundIsolate();
-
-    FlutterDownloader.registerCallback(downloadCallback);
-
-    _isLoading = true;
-    _permissionReady = false;
-
-    // _prepare();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-  }
-
-  void _bindBackgroundIsolate() {
-    bool isSuccess = IsolateNameServer.registerPortWithName(
-        _port.sendPort, 'downloader_send_port');
-    if (!isSuccess) {
-      _bindBackgroundIsolate();
-      return;
-    }
-    _port.listen((dynamic data) {
-      print('UI Isolate Callback2: $data');
-      String id = data[0];
-      DownloadTaskStatus status = data[1];
-      int progress = data[2];
-
-      print(
-        'Background Isolate Callback2: task ($id) is in status ($status) and process ($progress)');
-
-      // final task = _tasks?.firstWhere((task) => task.taskId == id);
-      // if (task != null) {
-      //   setState(() {
-      //     task.status = status;
-      //     task.progress = progress;
-      //   });
-      // }
-    });
-  }
-
-  static void downloadCallback(
-      String id, DownloadTaskStatus status, int progress) {
-    
-    final SendPort send =
-        IsolateNameServer.lookupPortByName('downloader_send_port');
-    send.send([id, status, progress]);
-  }
+class Downloads extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final DownloadProvider downloadProvider =
+        Provider.of<DownloadProvider>(context, listen: false);
+
+    downloadProvider.initDownloads();
+
     final height =
         Templates.getAvailableHeight(null, context) - AppConstant.navbarHeight;
+
+    final double width = MediaQuery.of(context).size.width;
+
     return CustomScaffold(
-      body: Center(
-        child: Text(
-          'No Downloads',
-          style: TextStyle(
-              color: Colors.blueGrey,
-              fontWeight: FontWeight.bold,
-              fontSize: height * 0.03),
-        ),
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: <Widget>[
+          Container(
+            height: height * 0.09,
+            padding: EdgeInsets.only(
+              left: width * 0.04,
+              right: width * 0.04,
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: <Widget>[
+                NeumorphicButton(
+                  padding: EdgeInsets.zero,
+                  drawSurfaceAboveChild: true,
+                  onClick: () {
+                    // refreshData(dataProvider, connectivity);
+                  },
+                  child: Container(
+                    padding: EdgeInsets.all(height * 0.015),
+                    child: Icon(
+                      Fontisto.spinner_refresh,
+                      color: Colors.blueGrey,
+                      size: height * 0.044,
+                    ),
+                  ),
+                  boxShape: NeumorphicBoxShape.circle(),
+                  style: NeumorphicStyle(
+                    color: Colors.lightBlueAccent.withOpacity(0.3),
+                    shape: NeumorphicShape.convex,
+                    shadowLightColor: Colors.transparent,
+                    intensity: 10,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Selector<DownloadProvider, bool>(
+            selector: (_, provider) => provider.isDownloadsInitialized,
+            builder: (_, initialized, childWidget) => initialized
+                ? Container(
+                    height: height * 0.91,
+                    child: ListView.builder(
+                      padding: EdgeInsets.only(top: height * 0.005),
+                      itemBuilder: (ctx, index) {
+                        List<DownloadTask> list =
+                            downloadProvider.downloadTaskList;
+
+                        return Text(list[index].filename);
+                      },
+                      itemCount: downloadProvider.downloadTaskList.length,
+                    ),
+                  )
+                : childWidget,
+            child: CustomIndicator(
+              color: Theme.of(context).primaryColor.withOpacity(0.6),
+              width: Templates.getWidth(context),
+            ),
+          ),
+        ],
       ),
     );
   }
