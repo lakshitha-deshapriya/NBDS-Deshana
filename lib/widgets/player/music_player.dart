@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:dharma_deshana/models/song.dart';
+import 'package:dharma_deshana/provider/download_provider.dart';
 import 'package:dharma_deshana/provider/song_provider.dart';
 import 'package:dharma_deshana/widgets/player/album_cover.dart';
 import 'package:dharma_deshana/widgets/player/music_buttons.dart';
@@ -21,6 +22,9 @@ class MusicPlayer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final DownloadProvider downloadProvider =
+        Provider.of<DownloadProvider>(context, listen: false);
+
     final double titleFactor = 0.035;
     final double paddingFactor = 0.05;
 
@@ -75,7 +79,7 @@ class MusicPlayer extends StatelessWidget {
                     SizedBox(height: height * 0.03),
                     Container(
                       height: height * 0.06,
-                      child: MusicButtons(height: height, song: song),
+                      child: MusicButtons(height: height),
                     ),
                     SizedBox(height: height * 0.03),
                     Container(
@@ -109,6 +113,7 @@ class MusicPlayer extends StatelessWidget {
                       child: SongPlayer(
                         height: height * 0.279,
                         paddingFactor: paddingFactor,
+                        downloadProvider: downloadProvider,
                       ),
                     )
                   ],

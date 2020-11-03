@@ -3,6 +3,7 @@ import 'package:dharma_deshana/models/download_info.dart';
 import 'package:dharma_deshana/models/song.dart';
 import 'package:dharma_deshana/provider/data_provider.dart';
 import 'package:dharma_deshana/provider/download_provider.dart';
+import 'package:dharma_deshana/provider/song_provider.dart';
 import 'package:dharma_deshana/widgets/templates/custom/custom_download_button.dart';
 import 'package:dharma_deshana/widgets/templates/custom/custom_neumorphic_button.dart';
 import 'package:dharma_deshana/widgets/templates/templates.dart';
@@ -14,17 +15,17 @@ import 'package:provider/provider.dart';
 
 class MusicButtons extends StatelessWidget {
   final double height;
-  final Song song;
+  // final Song song;
   final TargetPlatform platform;
 
-  const MusicButtons(
-      {@required this.height, @required this.song, this.platform});
+  const MusicButtons({@required this.height, this.platform});
 
   Widget getDownloadButton(
       int downloadStatus,
       DownloadProvider downloadProvider,
       DataProvider dataProvider,
-      DownloadInfo info) {
+      DownloadInfo info,
+      Song song) {
     return NeumorphicButton(
       padding: EdgeInsets.zero,
       drawSurfaceAboveChild: true,
@@ -33,12 +34,12 @@ class MusicButtons extends StatelessWidget {
         if (AppConstant.DOWNLOADABLE_STATE == downloadStatus) {
           String taskId = await downloadProvider.requestDownload(
               song.url, song.name, platform);
-          dataProvider.updateSongTaskId(song.songId, taskId);
+          dataProvider.updateSongTaskId(song.name, taskId);
           song.taskId = taskId;
         } else if (AppConstant.DOWNLOAD_FAIL == downloadStatus) {
           String taskId = await downloadProvider.requestDownload(
               song.url, song.name, platform);
-          dataProvider.updateSongTaskId(song.songId, taskId);
+          dataProvider.updateSongTaskId(song.name, taskId);
           song.taskId = taskId;
         } else if (AppConstant.DOWNLOADING_STATE == downloadStatus) {}
       },
@@ -61,8 +62,12 @@ class MusicButtons extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    DownloadProvider downloadProvider = Provider.of<DownloadProvider>(context);
-    DataProvider dataProvider = Provider.of(context, listen: false);
+    DownloadProvider downloadProvider =
+        Provider.of<DownloadProvider>(context);
+    DataProvider dataProvider =
+        Provider.of<DataProvider>(context, listen: false);
+    SongProvider songProvider =
+        Provider.of<SongProvider>(context, listen: false);
 
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -77,10 +82,17 @@ class MusicButtons extends StatelessWidget {
           backgroundColor: Colors.lightBlueAccent.withOpacity(0.1),
           depth: 5,
         ),
-        Selector<DownloadProvider, Map>(
+        Selector<DownloadProvider, List<DownloadInfo>>(
             selector: (_, provider) => provider.downloadTasks,
-            builder: (_, downloadInfos, __) {
-              DownloadInfo info = downloadInfos[song.taskId];
+            builder: (_, infoList, __) {
+              Song song = songProvider.song;
+
+              DownloadInfo info;
+              for (DownloadInfo downloadInfo in infoList) {
+                if (song.taskId == downloadInfo.taskId) {
+                  info = downloadInfo;
+                }
+              }
               int downloadStatus = Templates.downloadState(info, song.name);
 
               if (downloadProvider.hasDownloads(song.name)) {
@@ -88,8 +100,9 @@ class MusicButtons extends StatelessWidget {
               }
 
               return getDownloadButton(
-                  downloadStatus, downloadProvider, dataProvider, info);
-            })
+                  downloadStatus, downloadProvider, dataProvider, info, song);
+            }),
+        // )
       ],
     );
   }

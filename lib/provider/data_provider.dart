@@ -88,8 +88,8 @@ class DataProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  updateSongTaskId(int songId, String taskId) {
-    Song song = this._songs?.firstWhere((song) => song.songId == songId);
+  updateSongTaskId(String name, String taskId) {
+    Song song = this._songs?.firstWhere((song) => song.name == name);
     if (song != null) {
       song.taskId = taskId;
     }

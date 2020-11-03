@@ -17,7 +17,7 @@ class DownloadProvider with ChangeNotifier {
   bool _portRegistered = false;
   bool _hasPermission = false;
 
-  Map<String, DownloadInfo> _downloadingTasks = HashMap();
+  List<DownloadInfo> _downloadingTasks = List();
   List<DownloadTask> _downloads = List();
 
   Future<Null> initDownloads() async {
@@ -73,15 +73,16 @@ class DownloadProvider with ChangeNotifier {
     print(
         'Background Isolate Callback: task ($taskId) is in status ($status) and process ($progress)');
 
-    Map<String, DownloadInfo> infoMap = HashMap();
-    _downloadingTasks.values.forEach((info) {
+    List<DownloadInfo> newList = List();
+    for (DownloadInfo info in _downloadingTasks) {
       if (info.taskId == taskId) {
         info.progress = progress;
         info.status = status;
       }
-      infoMap[taskId] = info;
-    });
-    setDownloadingTasks(infoMap);
+      newList.add(info);
+    }
+    setDownloadTasks(newList);
+
     if (status == DownloadTaskStatus.complete) {
       initDownloads();
     }
@@ -108,12 +109,7 @@ class DownloadProvider with ChangeNotifier {
         showNotification: true,
         openFileFromNotification: true,
       );
-
-      _downloadingTasks.update(
-        taskId,
-        (value) => DownloadInfo(taskId: taskId, songName: songName),
-        ifAbsent: () => DownloadInfo(taskId: taskId, songName: songName),
-      );
+      _downloadingTasks.add(DownloadInfo(taskId: taskId, songName: songName));
     }
     return taskId;
   }
@@ -126,9 +122,9 @@ class DownloadProvider with ChangeNotifier {
 
   bool get hasPermission => _hasPermission;
 
-  Map get downloadTasks => _downloadingTasks;
-  setDownloadingTasks(Map<String, DownloadInfo> map) {
-    _downloadingTasks = map;
+  List<DownloadInfo> get downloadTasks => _downloadingTasks;
+  setDownloadTasks(List<DownloadInfo> infoList) {
+    _downloadingTasks = infoList;
     notifyListeners();
   }
 
@@ -137,11 +133,27 @@ class DownloadProvider with ChangeNotifier {
     bool hasDownloads = false;
 
     for (DownloadTask task in _downloads) {
-      if (!hasDownloads && task.filename == fileName) {
+      if (!hasDownloads &&
+          task.filename == fileName &&
+          task.status == DownloadTaskStatus.complete) {
         hasDownloads = true;
         break;
       }
     }
     return hasDownloads;
+  }
+
+  DownloadTask getDownloadedSongTask(String songName) {
+    String fileName = songName + '.mp3';
+    DownloadTask downloadTask;
+
+    for (DownloadTask task in _downloads) {
+      if (task.filename == fileName &&
+          task.status == DownloadTaskStatus.complete) {
+        downloadTask = task;
+        break;
+      }
+    }
+    return downloadTask;
   }
 }

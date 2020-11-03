@@ -1,22 +1,26 @@
 import 'package:audioplayers/audioplayers.dart';
+import 'package:dharma_deshana/models/song.dart';
+import 'package:dharma_deshana/provider/download_provider.dart';
 import 'package:dharma_deshana/provider/song_provider.dart';
-import 'package:dharma_deshana/widgets/templates/custom/custom_button.dart';
-import 'package:dharma_deshana/widgets/templates/custom/custom_neumorphic_button.dart';
 import 'package:dharma_deshana/widgets/templates/custom/custom_slider.dart';
 import 'package:dharma_deshana/widgets/templates/custom/custom_timer.dart';
 import 'package:dharma_deshana/widgets/templates/templates.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
+import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
 
 class SongPlayer extends StatelessWidget {
   final double height;
   final double paddingFactor;
+  final DownloadProvider downloadProvider;
 
   SongPlayer({
     this.height,
     this.paddingFactor,
+    this.downloadProvider,
   });
 
   void initAudioPlayer(SongProvider songProvider) {
@@ -61,21 +65,29 @@ class SongPlayer extends StatelessWidget {
       if (songProvider.playingSongId != songProvider.song.songId) {
         songProvider.audioPlayer.stop();
         resetPlayerData(songProvider);
-        play(songProvider, songProvider.song.url);
+        play(songProvider, songProvider.song);
       }
     } else if (songProvider.isPaused) {
       if (songProvider.playingSongId != songProvider.song.songId) {
         songProvider.audioPlayer.stop();
         resetPlayerData(songProvider);
-        play(songProvider, songProvider.song.url);
+        play(songProvider, songProvider.song);
       }
     } else {
-      play(songProvider, songProvider.song.url);
+      play(songProvider, songProvider.song);
     }
   }
 
-  void play(SongProvider provider, String url) async {
-    int result = await provider.audioPlayer.play(Uri.encodeFull(url));
+  void play(SongProvider provider, Song song) async {
+    String url = Uri.encodeFull(song.url);
+    bool isLocal = false;
+
+    DownloadTask task = downloadProvider.getDownloadedSongTask(song.name);
+    if (task != null) {
+      url = task.savedDir + Platform.pathSeparator + task.filename;
+      isLocal = true;
+    }
+    int result = await provider.audioPlayer.play(url, isLocal: isLocal);
     if (result == 1) {
       provider.setPaused(false);
       provider.setPlaying(true);
@@ -111,7 +123,7 @@ class SongPlayer extends StatelessWidget {
       songProvider.audioPlayer.stop();
       resetPlayerData(songProvider);
       playSong(songProvider);
-    } else if ( finished ) {
+    } else if (finished) {
       resetPlayerData(songProvider);
       songProvider.setPaused(false);
       songProvider.setPlaying(false);
@@ -124,10 +136,11 @@ class SongPlayer extends StatelessWidget {
       songProvider.audioPlayer.stop();
       resetPlayerData(songProvider);
       playSong(songProvider);
-    } else {
-      songProvider.setPaused(false);
-      songProvider.setPlaying(false);
-    }
+    } 
+    // else {
+    //   songProvider.setPaused(false);
+    //   songProvider.setPlaying(false);
+    // }
   }
 
   @override
