@@ -89,10 +89,14 @@ class DataProvider with ChangeNotifier {
   }
 
   updateSongTaskId(String name, String taskId) {
-    Song song = this._songs?.firstWhere((song) => song.name == name);
+    Song song = getSongByName(name);
     if (song != null) {
       song.taskId = taskId;
     }
+  }
+
+  getSongByName(String name) {
+    return this._songs?.firstWhere((song) => song.name == name);
   }
 
   List<String> getTypesForCategory(String category) {

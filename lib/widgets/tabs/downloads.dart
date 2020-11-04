@@ -1,5 +1,6 @@
 import 'package:dharma_deshana/constant/app_constant.dart';
 import 'package:dharma_deshana/provider/download_provider.dart';
+import 'package:dharma_deshana/widgets/item/download_item.dart';
 import 'package:dharma_deshana/widgets/templates/custom/custom_indicator.dart';
 import 'package:dharma_deshana/widgets/templates/custom/custom_scaffold.dart';
 import 'package:dharma_deshana/widgets/templates/templates.dart';
@@ -8,8 +9,14 @@ import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:provider/provider.dart';
+import 'package:tuple/tuple.dart';
 
 class Downloads extends StatelessWidget {
+  refreshData(DownloadProvider downloadProvider) {
+    downloadProvider.setDownloadInitialized(false);
+    downloadProvider.initDownloads();
+  }
+
   @override
   Widget build(BuildContext context) {
     final DownloadProvider downloadProvider =
@@ -39,7 +46,7 @@ class Downloads extends StatelessWidget {
                   padding: EdgeInsets.zero,
                   drawSurfaceAboveChild: true,
                   onClick: () {
-                    // refreshData(dataProvider, connectivity);
+                    refreshData(downloadProvider);
                   },
                   child: Container(
                     padding: EdgeInsets.all(height * 0.015),
@@ -60,18 +67,22 @@ class Downloads extends StatelessWidget {
               ],
             ),
           ),
-          Selector<DownloadProvider, bool>(
-            selector: (_, provider) => provider.isDownloadsInitialized,
-            builder: (_, initialized, childWidget) => initialized
+          Selector<DownloadProvider, Tuple2<bool, String>>(
+            selector: (_, provider) =>
+                Tuple2(provider.isDownloadsInitialized, provider.taskDetail),
+            builder: (_, tuple, childWidget) => tuple.item1
                 ? Container(
                     height: height * 0.91,
                     child: ListView.builder(
                       padding: EdgeInsets.only(top: height * 0.005),
                       itemBuilder: (ctx, index) {
-                        List<DownloadTask> list =
-                            downloadProvider.downloadTaskList;
+                        DownloadTask task =
+                            downloadProvider.downloadTaskList[index];
 
-                        return Text(list[index].filename);
+                        return DownloadItem(
+                          songName: task.filename.replaceAll('.mp3', ''),
+                          task: task,
+                        );
                       },
                       itemCount: downloadProvider.downloadTaskList.length,
                     ),

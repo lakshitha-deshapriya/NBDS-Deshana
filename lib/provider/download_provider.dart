@@ -23,6 +23,7 @@ class DownloadProvider with ChangeNotifier {
 
   Future<Null> initDownloads() async {
     _downloads = await FlutterDownloader.loadTasks();
+    _downloads.sort((a, b) => a.filename.toLowerCase().compareTo(b.filename.toLowerCase()));
     setDownloadInitialized(true);
   }
 
@@ -144,8 +145,7 @@ class DownloadProvider with ChangeNotifier {
         '-' +
         info.progress.toString() +
         '-' +
-        info.status.toString() +
-        ',';
+        info.status.value.toString();
     notifyListeners();
   }
 
