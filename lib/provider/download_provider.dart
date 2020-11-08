@@ -1,11 +1,13 @@
 import 'dart:isolate';
 import 'dart:ui';
 
+import 'package:dharma_deshana/constant/app_constant.dart';
 import 'package:dharma_deshana/models/download_info.dart';
 import 'package:dharma_deshana/widgets/templates/templates.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
+import 'package:tuple/tuple.dart';
 
 class DownloadProvider with ChangeNotifier {
   static final String downloadPort = 'downloader_send_port';
@@ -23,7 +25,8 @@ class DownloadProvider with ChangeNotifier {
 
   Future<Null> initDownloads() async {
     _downloads = await FlutterDownloader.loadTasks();
-    _downloads.sort((a, b) => a.filename.toLowerCase().compareTo(b.filename.toLowerCase()));
+    _downloads.sort(
+        (a, b) => a.filename.toLowerCase().compareTo(b.filename.toLowerCase()));
     setDownloadInitialized(true);
   }
 
@@ -112,6 +115,9 @@ class DownloadProvider with ChangeNotifier {
         showNotification: true,
         openFileFromNotification: true,
       );
+
+      _downloadingTasks.removeWhere((task) => task.songName == songName);
+
       _downloadingTasks.add(DownloadInfo(taskId: taskId, songName: songName));
     }
     return taskId;
@@ -178,5 +184,64 @@ class DownloadProvider with ChangeNotifier {
       }
     }
     return downloadTask;
+  }
+
+  Tuple3<int, DownloadInfo, DownloadTask> getDownloadState(String songName) {
+    String fileName = songName + '.mp3';
+    DownloadTask downloadTask;
+    DownloadInfo downloadInfo;
+
+    for (DownloadInfo infoItem in _downloadingTasks) {
+      if (infoItem.songName == songName) {
+        downloadInfo = infoItem;
+        break;
+      }
+    }
+
+    if (downloadInfo != null) {
+      DownloadTaskStatus status = downloadInfo.status;
+
+      int downloadState;
+      if (DownloadTaskStatus.complete == status) {
+        downloadState = AppConstant.DOWNLOADED_STATE;
+      } else if (DownloadTaskStatus.enqueued == status ||
+          DownloadTaskStatus.running == status ||
+          DownloadTaskStatus.paused == status) {
+        downloadState = AppConstant.DOWNLOADING_STATE;
+      } else if (DownloadTaskStatus.undefined == status ||
+          DownloadTaskStatus.canceled == status) {
+        downloadState = AppConstant.DOWNLOADABLE_STATE;
+      } else {
+        downloadState = AppConstant.DOWNLOAD_FAIL;
+      }
+      return Tuple3(downloadState, downloadInfo, null);
+    }
+
+    for (DownloadTask task in _downloads) {
+      if (task.filename == fileName) {
+        downloadTask = task;
+        break;
+      }
+    }
+
+    if (downloadTask != null) {
+      DownloadTaskStatus status = downloadTask.status;
+
+      int downloadState;
+      if (DownloadTaskStatus.complete == status) {
+        downloadState = AppConstant.DOWNLOADED_STATE;
+      } else if (DownloadTaskStatus.enqueued == status ||
+          DownloadTaskStatus.running == status ||
+          DownloadTaskStatus.paused == status) {
+        downloadState = AppConstant.DOWNLOADING_STATE;
+      } else if (DownloadTaskStatus.undefined == status ||
+          DownloadTaskStatus.canceled == status) {
+        downloadState = AppConstant.DOWNLOADABLE_STATE;
+      } else {
+        downloadState = AppConstant.DOWNLOAD_FAIL;
+      }
+      return Tuple3(downloadState, null, downloadTask);
+    }
+    return Tuple3(AppConstant.DOWNLOADABLE_STATE, null, null);
   }
 }
