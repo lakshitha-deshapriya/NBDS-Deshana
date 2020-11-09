@@ -6,19 +6,23 @@ import 'package:dharma_deshana/provider/download_provider.dart';
 import 'package:dharma_deshana/provider/song_provider.dart';
 import 'package:dharma_deshana/widgets/player/music_player.dart';
 import 'package:dharma_deshana/widgets/templates/custom/custom_text.dart';
+import 'package:dharma_deshana/widgets/templates/custom/delete_alert.dart';
 import 'package:dharma_deshana/widgets/templates/templates.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
+import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.widget.dart';
 import 'package:provider/provider.dart';
 import 'package:transparent_image/transparent_image.dart';
+import 'package:tuple/tuple.dart';
 
 class DownloadItem extends StatelessWidget {
   final String songName;
   final DownloadTask task;
+  final TargetPlatform platform;
 
-  DownloadItem({@required this.songName, @required this.task});
+  DownloadItem({@required this.songName, @required this.task, this.platform});
 
   void playSong(
       BuildContext context, Song song, DownloadProvider downloadProvider) {
@@ -55,8 +59,9 @@ class DownloadItem extends StatelessWidget {
 
     final double width = Templates.getWidth(context);
     final double height = width * 0.14;
+    final double iconWidth = width * 0.11;
 
-    double textContainerWidth = width * 0.72;
+    double textContainerWidth = width * 0.71;
 
     final Song song = dataProvider.getSongByName(songName);
 
@@ -125,36 +130,40 @@ class DownloadItem extends StatelessWidget {
                 ],
               ),
             ),
-            Selector<DownloadProvider, String>(
-              selector: (_, provider) => provider.taskDetail,
-              builder: (_, taskDetail, __) {
-                DownloadInfo info;
-                for (DownloadInfo downloadInfo
-                    in downloadProvider.downloadInfoList) {
-                  if (song.taskId == downloadInfo.taskId) {
-                    info = downloadInfo;
-                  }
-                }
-                int downloadStatus = Templates.downloadState(info, song.name);
-                if (AppConstant.DOWNLOADING_STATE == downloadStatus) {
-                  return Container(
-                    width: width * 0.08,
-                    height: width * 0.08,
-                    padding: EdgeInsets.all(height * 0.011),
-                    child: CircularProgressIndicator(
-                      value: info.progress / 100,
-                      backgroundColor: Colors.lightBlueAccent.withOpacity(0.2),
-                      valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
+            Container(
+              width: iconWidth,
+              height: iconWidth,
+              child: Selector<DownloadProvider, String>(
+                selector: (_, provider) => provider.taskDetail,
+                builder: (_, taskDetail, __) {
+                  Tuple3<int, DownloadInfo, DownloadTask> details =
+                      downloadProvider.getDownloadState(song.name);
+
+                  return NeumorphicButton(
+                    padding: EdgeInsets.zero,
+                    isEnabled: AppConstant.DOWNLOADED_STATE == details.item1,
+                    onClick: () async {
+                      if (AppConstant.DOWNLOADED_STATE == details.item1) {
+                        DeleteAlert(
+                          context: context,
+                          dataProvider: dataProvider,
+                          downloadProvider: downloadProvider,
+                          songName: songName,
+                          taskId: task.taskId,
+                        );
+                      }
+                    },
+                    drawSurfaceAboveChild: true,
+                    child: getIcon(details, iconWidth),
+                    style: NeumorphicStyle(
+                      color: AppConstant.DOWNLOADED_STATE == details.item1
+                          ? Colors.redAccent.withOpacity(0.15)
+                          : Colors.lightBlueAccent.withOpacity(0.2),
+                      shape: NeumorphicShape.convex,
                     ),
                   );
-                } else {
-                  return Container(
-                    width: width * 0.08,
-                    height: width * 0.08,
-                    padding: EdgeInsets.all(height * 0.011),
-                  );
-                }
-              },
+                },
+              ),
             ),
           ],
         ),
@@ -165,5 +174,28 @@ class DownloadItem extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Widget getIcon(
+      Tuple3<int, DownloadInfo, DownloadTask> details, double iconWidth) {
+    if (AppConstant.DOWNLOADED_STATE == details.item1) {
+      return Icon(
+        FontAwesome.trash,
+        color: Colors.red,
+      );
+    } else if (AppConstant.DOWNLOADING_STATE == details.item1) {
+      int progress = details.item2 != null
+          ? details.item2.progress
+          : details.item3.progress;
+      return Padding(
+        padding: EdgeInsets.all(iconWidth * 0.15),
+        child: CircularProgressIndicator(
+          value: progress.toDouble() / 100,
+          backgroundColor: Colors.lightBlueAccent.withOpacity(0.2),
+          valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
+        ),
+      );
+    }
+    return Container();
   }
 }

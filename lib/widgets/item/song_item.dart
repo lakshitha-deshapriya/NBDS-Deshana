@@ -154,12 +154,8 @@ class SongItem extends StatelessWidget {
                   isEnabled: AppConstant.DOWNLOADABLE_STATE == details.item1 ||
                       AppConstant.DOWNLOAD_FAIL == details.item1,
                   onClick: () async {
-                    if (AppConstant.DOWNLOADABLE_STATE == details.item1) {
-                      String taskId = await downloadProvider.requestDownload(
-                          song.url, song.name, platform);
-                      dataProvider.updateSongTaskId(song.name, taskId);
-                      song.taskId = taskId;
-                    } else if (AppConstant.DOWNLOAD_FAIL == details.item1) {
+                    if (AppConstant.DOWNLOADABLE_STATE == details.item1 ||
+                        AppConstant.DOWNLOAD_FAIL == details.item1) {
                       String taskId = await downloadProvider.requestDownload(
                           song.url, song.name, platform);
                       dataProvider.updateSongTaskId(song.name, taskId);

@@ -87,7 +87,9 @@ class DownloadProvider with ChangeNotifier {
         downloadInfo = info;
       }
     }
-    setTaskDetail(downloadInfo);
+    if (downloadInfo != null) {
+      setTaskDetail(downloadInfo);
+    }
 
     if (status == DownloadTaskStatus.complete) {
       initDownloads();
@@ -123,6 +125,31 @@ class DownloadProvider with ChangeNotifier {
     return taskId;
   }
 
+  void deleteDownload(String taskId, String songName) async {
+    await FlutterDownloader.remove(taskId: taskId, shouldDeleteContent: true);
+
+    setDownloadInitialized(false);
+
+    _downloadingTasks.removeWhere((info) => info.songName == songName);
+
+    await initDownloads();
+
+    setDummyTaskDetail(songName);
+  }
+
+  void cancelDownload(String taskId, String songName) async {
+    await FlutterDownloader.pause(taskId: taskId);
+    await FlutterDownloader.cancel(taskId: taskId);
+
+    setDownloadInitialized(false);
+
+    _downloadingTasks.removeWhere((info) => info.songName == songName);
+
+    await initDownloads();
+
+    setDummyTaskDetail(songName);
+  }
+
   bool get isDownloadPortRegistered => _portRegistered;
   setDownloadPortRegistered(bool registered) {
     _portRegistered = registered;
@@ -152,6 +179,11 @@ class DownloadProvider with ChangeNotifier {
         info.progress.toString() +
         '-' +
         info.status.value.toString();
+    notifyListeners();
+  }
+
+  setDummyTaskDetail(String songName) {
+    _taskDetail = _taskDetail == songName ? songName + '1' : songName;
     notifyListeners();
   }
 
@@ -206,10 +238,10 @@ class DownloadProvider with ChangeNotifier {
         downloadState = AppConstant.DOWNLOADED_STATE;
       } else if (DownloadTaskStatus.enqueued == status ||
           DownloadTaskStatus.running == status ||
-          DownloadTaskStatus.paused == status) {
+          DownloadTaskStatus.paused == status ||
+          DownloadTaskStatus.undefined == status) {
         downloadState = AppConstant.DOWNLOADING_STATE;
-      } else if (DownloadTaskStatus.undefined == status ||
-          DownloadTaskStatus.canceled == status) {
+      } else if (DownloadTaskStatus.canceled == status) {
         downloadState = AppConstant.DOWNLOADABLE_STATE;
       } else {
         downloadState = AppConstant.DOWNLOAD_FAIL;
@@ -232,10 +264,10 @@ class DownloadProvider with ChangeNotifier {
         downloadState = AppConstant.DOWNLOADED_STATE;
       } else if (DownloadTaskStatus.enqueued == status ||
           DownloadTaskStatus.running == status ||
-          DownloadTaskStatus.paused == status) {
+          DownloadTaskStatus.paused == status ||
+          DownloadTaskStatus.undefined == status) {
         downloadState = AppConstant.DOWNLOADING_STATE;
-      } else if (DownloadTaskStatus.undefined == status ||
-          DownloadTaskStatus.canceled == status) {
+      } else if (DownloadTaskStatus.canceled == status) {
         downloadState = AppConstant.DOWNLOADABLE_STATE;
       } else {
         downloadState = AppConstant.DOWNLOAD_FAIL;
