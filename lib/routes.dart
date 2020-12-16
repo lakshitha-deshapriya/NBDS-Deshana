@@ -15,7 +15,7 @@ class RouteName {
   static const String player = '/player';
 }
 
-class Router {
+class Routers {
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
       case RouteName.initial:

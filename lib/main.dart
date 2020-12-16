@@ -32,7 +32,7 @@ class MyApp extends StatelessWidget {
         ),
         initialRoute: RouteName.initial,
         debugShowCheckedModeBanner: false,
-        routes: Router.routesList(context),
+        routes: Routers.routesList(context),
       ),
     );
   }
