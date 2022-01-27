@@ -16,8 +16,7 @@ Using this app, user could download those music files to the device and from tha
 <!-- USAGE EXAMPLES -->
 ## Usage
 
-https://res.cloudinary.com/lakshithadev/video/upload/v1643288357/Music/ForTest/Movie2_qkd84l.mp4
-
+https://user-images.githubusercontent.com/11326202/151365702-885f9eea-f646-4f40-b4fc-bf61ea608e47.mp4
 
 <!-- CONTACT -->
 ## Contact
