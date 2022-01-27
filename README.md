@@ -1,16 +1,40 @@
-# dharma_deshana
+# NBDS Deshana
 
-A new Flutter project.
+<!-- ABOUT THE PROJECT -->
+## About The Project
 
-## Getting Started
+This is a cross platform music streaming app that can play audio files stored in cloud. Configurations will be downloaded from Firebase and using those configurations, will get the necessary meta-data to play the music such as file stored url.
 
-This project is a starting point for a Flutter application.
+Using this app, user could download those music files to the device and from that moment forward will be able to play the music without internet connection.
 
-A few resources to get you started if this is your first Flutter project:
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
+### Built With
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+* [Flutter](https://flutter.dev/)
+* [Firebase](https://firebase.google.com/)
+
+<!-- USAGE EXAMPLES -->
+## Usage
+
+
+
+<!-- CONTACT -->
+## Contact
+
+Lakshitha Deshapriya - (lakshithadeshapriya@gmail.com)
+
+LinkedIn - www.linkedin.com/in/lakshithadeshapriya
+
+
+<!-- ACKNOWLEDGMENTS -->
+## Acknowledgments
+
+* [AudioPlayers](https://pub.dev/packages/audioplayers)
+* [Provider](https://pub.dev/packages/provider)
+* [Flutter SpinKit](https://pub.dev/packages/flutter_spinkit)
+* [Persistent Bottom Navigation Bar](https://pub.dev/packages/persistent_bottom_nav_bar)
+* [Connectivity](https://pub.dev/packages/connectivity)
+* [Flutter Downloader](https://pub.dev/packages/flutter_downloader)
+* [Permission Handler](https://pub.dev/packages/permission_handler)
+* [Flutter Launcher Icons](https://pub.dev/packages/flutter_launcher_icons)
+
